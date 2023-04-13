@@ -51,7 +51,6 @@ exports.get_backups = function(cb){
 exports.get_db_stats = function (mongo_db, db_name, cb){
     var async = require('async');
     var db_obj = {};
-    console.log('BBB', mongo_db);
     // if at connection level we loop db's and collections
     if(db_name == null){
         var adminDb = mongo_db.admin();

@@ -178,11 +178,9 @@ router.get('/app/:conn/:db', function (req, res, next){
         return;
     }
     // Get DB's form pool
-    console.log('AAA', connection_list[req.params.conn].native);
     var mongo_db = connection_list[req.params.conn].native.db(req.params.db);
 
     // do DB stuff
-    console.log('req.params.db', req.params.db);
     common.get_db_stats(mongo_db, req.params.db, function (err, db_stats){
         common.get_sidebar_list(mongo_db, req.params.db, function (err, sidebar_list){
             mongo_db.command({usersInfo: 1}, function (err, conn_users){
@@ -240,7 +238,7 @@ router.get('/app/:conn/:db/:coll/view/:page_num', function (req, res, next){
         // clean up the collection list
         collection_list = common.cleanCollections(collection_list);
         common.get_sidebar_list(mongo_db, req.params.db, function (err, sidebar_list){
-            mongo_db.db(req.params.db).collection(req.params.coll).count(function (err, coll_count){
+            mongo_db.collection(req.params.coll).count(function (err, coll_count){
                 if(collection_list.indexOf(req.params.coll) === -1){
                     common.render_error(res, req, 'Database or Collection does not exist', req.params.conn);
                 }else{
