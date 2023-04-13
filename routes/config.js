@@ -10,7 +10,7 @@ router.all('/config/*', common.checkLogin, function (req, res, next){
 // Add a new connection config
 router.post('/config/add_config', function (req, res, next){
     var nconf = req.nconf.connections;
-    var MongoURI = require('mongo-uri');
+    // var MongoURI = require('mongo-uri');
     var connPool = require('../connections');
     var connection_list = req.nconf.connections.get('connections');
 
@@ -24,7 +24,7 @@ router.post('/config/add_config', function (req, res, next){
 
     // try parse uri string. If pass, add, else throw an error
     try{
-        MongoURI.parse(req.body[1]);
+        // MongoURI.parse(req.body[1]);
         var options = {};
         try{
             options = JSON.parse(req.body[2]);
@@ -32,7 +32,7 @@ router.post('/config/add_config', function (req, res, next){
             res.status(400).json({'msg': req.i18n.__('Error in connection options') + ': ' + err});
             return;
         }
-
+        console.log('>>>', req.body);
         // try add the connection
         connPool.addConnection({connName: req.body[0], connString: req.body[1], connOptions: options}, req.app, function (err, data){
             if(err){
@@ -63,11 +63,11 @@ router.post('/config/add_config', function (req, res, next){
 router.post('/config/update_config', function (req, res, next){
     var nconf = req.nconf.connections;
     var connPool = require('../connections');
-    var MongoURI = require('mongo-uri');
+    // var MongoURI = require('mongo-uri');
 
     // try parse uri string. If pass, add, else throw an error
     try{
-        MongoURI.parse(req.body.conn_string);
+        // MongoURI.parse(req.body.conn_string);
 
         // var get current options
         var current_options = nconf.store.connections[req.body.curr_config].connection_options;

@@ -268,10 +268,10 @@ var monitoring = require('./monitoring');
 app.locals.dbConnections = null;
 
 async.forEachOf(connection_list, function (value, key, callback){
-    var MongoURI = require('mongo-uri');
+    // var MongoURI = require('mongo-uri');
 
     try{
-        MongoURI.parse(value.connection_string);
+        // MongoURI.parse(value.connection_string);
         connPool.addConnection({connName: key, connString: value.connection_string, connOptions: value.connection_options}, app, function (err, data){
             if(err)delete connection_list[key];
             callback();

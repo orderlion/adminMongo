@@ -51,7 +51,7 @@ exports.get_backups = function(cb){
 exports.get_db_stats = function (mongo_db, db_name, cb){
     var async = require('async');
     var db_obj = {};
-
+    console.log('BBB', mongo_db);
     // if at connection level we loop db's and collections
     if(db_name == null){
         var adminDb = mongo_db.admin();
@@ -95,10 +95,10 @@ exports.get_db_stats = function (mongo_db, db_name, cb){
         });
         // if at DB level, we just grab the collections below
     }else{
-        mongo_db.db(db_name).listCollections().toArray(function (err, coll_list){
+        mongo_db.listCollections().toArray(function (err, coll_list){
             var coll_obj = {};
             async.forEachOf(exports.cleanCollections(coll_list), function (value, key, callback){
-                mongo_db.db(db_name).collection(value).stats(function (err, coll_stat){
+                mongo_db.collection(value).stats(function (err, coll_stat){
                     coll_obj[value] = {
                         Storage: coll_stat ? coll_stat.size : 0,
                         Documents: coll_stat ? coll_stat.count : 0
@@ -225,7 +225,7 @@ exports.get_sidebar_list = function (mongo_db, db_name, cb){
             }
         });
     }else{
-        mongo_db.db(db_name).listCollections().toArray(function (err, collections){
+        mongo_db.listCollections().toArray(function (err, collections){
             collections = exports.cleanCollections(collections);
             exports.order_array(collections);
             db_obj[db_name] = collections;

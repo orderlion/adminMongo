@@ -109,7 +109,8 @@ router.get('/app/monitoring/:conn/', function (req, res, next){
 // The base connection route showing all DB's for connection
 router.get('/app/:conn', function (req, res, next){
     var connection_list = req.app.locals.dbConnections;
-    var MongoURI = require('mongo-uri');
+    // var MongoURI = require('mongo-uri');
+    var MongoConnectionString = require('mongo-connection-string');
 
     // if no connection found
     if(!connection_list || Object.keys(connection_list).length === 0){
@@ -125,7 +126,8 @@ router.get('/app/:conn', function (req, res, next){
 
     // parse the connection string to get DB
     var conn_string = connection_list[req.params.conn].connString;
-    var uri = MongoURI.parse(conn_string);
+    // var uri = MongoURI.parse(conn_string);
+    var uri = new MongoConnectionString.ConnectionString(conn_string);
 
     // If there is a DB in the connection string, we redirect to the DB level
     if(uri.database){
@@ -136,6 +138,7 @@ router.get('/app/:conn', function (req, res, next){
     // Get DB's form pool
     var mongo_db = connection_list[req.params.conn].native;
 
+    console.log('uri.database', uri.database);
     common.get_db_status(mongo_db, function (err, db_status){
         common.get_backups(function(err, backup_list){
             common.get_db_stats(mongo_db, uri.database, function (err, db_stats){
@@ -175,9 +178,11 @@ router.get('/app/:conn/:db', function (req, res, next){
         return;
     }
     // Get DB's form pool
+    console.log('AAA', connection_list[req.params.conn].native);
     var mongo_db = connection_list[req.params.conn].native.db(req.params.db);
 
     // do DB stuff
+    console.log('req.params.db', req.params.db);
     common.get_db_stats(mongo_db, req.params.db, function (err, db_stats){
         common.get_sidebar_list(mongo_db, req.params.db, function (err, sidebar_list){
             mongo_db.command({usersInfo: 1}, function (err, conn_users){
